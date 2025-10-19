@@ -1,0 +1,3 @@
+*.o
+bigint_test
+.vscode/
