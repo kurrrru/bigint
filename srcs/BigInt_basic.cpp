@@ -1,0 +1,39 @@
+#include <iostream>
+#include <string>
+#include <stdexcept>
+
+#include <srcs/BigInt.hpp>
+#include <srcs/DynamicArray.hpp>
+
+BigInt::BigInt()
+    : _digits(), _isNegative(false) {}
+
+BigInt::BigInt(const BigInt& other)
+    : _digits(other._digits), _isNegative(other._isNegative) {}
+
+BigInt& BigInt::operator=(const BigInt& rhs) {
+    if (this != &rhs) {
+        BigInt tmp(rhs);
+        swap(tmp);
+    }
+    return *this;
+}
+
+BigInt::~BigInt() {}
+
+void BigInt::swap(BigInt& other) {
+    _digits.swap(other._digits);
+    std::swap(_isNegative, other._isNegative);
+}
+
+void swap(BigInt& lhs, BigInt& rhs) {
+    lhs.swap(rhs);
+}
+
+bool BigInt::isZero() const {
+    return _digits.size() == 0 || (_digits.size() == 1 && _digits[0] == 0);
+}
+
+bool BigInt::isNegative() const {
+    return _isNegative;
+}
