@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <utility>
 
 #include <srcs/BigInt.hpp>
 #include <srcs/DynamicArray.hpp>

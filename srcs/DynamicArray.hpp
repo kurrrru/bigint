@@ -2,13 +2,14 @@
 
 #include <memory>
 #include <stdexcept>
+#include <utility>
 
 template <typename T, typename Alloc = std::allocator<T> >
 class DynamicArray {
  public:
     DynamicArray()
         : _data(NULL), _size(0), _capacity(0), _allocator(Alloc()) {}
-    
+
     DynamicArray(const DynamicArray& other)
         : _data(NULL), _size(0), _capacity(0), _allocator(other._allocator) {
         reserve(other._size);
@@ -145,11 +146,11 @@ class DynamicArray {
                 _allocator.destroy(&new_data[i]);
             }
             _allocator.deallocate(new_data, new_capacity);
-            throw; 
+            throw;
         }
         for (std::size_t i = 0; i < _size; ++i) {
             _allocator.destroy(&_data[i]);
-        }        
+        }
         if (_data) {
             _allocator.deallocate(_data, _capacity);
         }

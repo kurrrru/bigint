@@ -2,12 +2,13 @@
 
 #include <string>
 #include <iostream>
+#include <utility>
 
 #include <srcs/DynamicArray.hpp>
 
 
 class BigInt {
-public:
+ public:
     typedef unsigned int DigitType;
     // BigInt_basic.cpp
     BigInt();
@@ -47,7 +48,7 @@ public:
     explicit BigInt(const std::string& str);
     std::string toString() const;  // not implemented yet
 
-private:
+ private:
     DynamicArray<DigitType> _digits;
     bool _isNegative;
     static const std::size_t BITS_PER_DIGIT = sizeof(DigitType) * 8;

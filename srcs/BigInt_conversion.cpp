@@ -37,7 +37,8 @@ BigInt::BigInt(const std::string& str)
     const BigInt TEN(10);
     for (std::size_t i = startIndex; i < str.size(); ++i) {
         if (!std::isdigit(static_cast<unsigned char>(str[i]))) {
-            throw std::invalid_argument("Invalid string for BigInt: non-digit character");
+            throw std::invalid_argument(
+                "Invalid string for BigInt: non-digit character");
         }
         int digit = str[i] - '0';
         *this *= TEN;

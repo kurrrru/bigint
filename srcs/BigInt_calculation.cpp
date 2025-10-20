@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <limits>
 #include <iostream>
 #include <string>
@@ -19,7 +20,8 @@ BigInt& BigInt::operator+=(const BigInt& rhs) {
         for (std::size_t i = 0; i < rhs._digits.size(); ++i) {
             if (i < _digits.size()) {
                 _digits[i] += rhs._digits[i] + (carry ? 1 : 0);
-                if ((carry && _digits[i] <= rhs._digits[i]) || _digits[i] < rhs._digits[i]) {
+                if ((carry && _digits[i] <= rhs._digits[i])
+                    || _digits[i] < rhs._digits[i]) {
                     carry = true;
                 } else {
                     carry = false;
@@ -107,14 +109,14 @@ BigInt& BigInt::operator*=(const BigInt& rhs) {
     return *this;
 }
 
-BigInt& BigInt::operator/=(const BigInt& rhs) {
+BigInt& BigInt::operator/=(const BigInt& rhs) {  // O(n^2)
     BigInt quotient, remainder;
     divide_and_remainder(*this, rhs, quotient, remainder);
     *this = quotient;
     return *this;
 }
 
-BigInt& BigInt::operator%=(const BigInt& rhs) {
+BigInt& BigInt::operator%=(const BigInt& rhs) {  // O(n^2)
     BigInt quotient, remainder;
     divide_and_remainder(*this, rhs, quotient, remainder);
     *this = remainder;
@@ -143,7 +145,7 @@ BigInt& BigInt::operator<<=(std::size_t shift) {
         const std::size_t rightShift = BITS_PER_DIGIT - bitShift;
         for (std::size_t i = 0; i < n; ++i) {
             DigitType current = _digits[i];
-            DigitType newCarry = (current >> rightShift); 
+            DigitType newCarry = (current >> rightShift);
             _digits[i] = (current << bitShift) | carry;
             carry = newCarry;
         }
@@ -176,7 +178,7 @@ BigInt& BigInt::operator>>=(std::size_t shift) {
         std::size_t n = _digits.size();
         if (n == 0) {
             normalize();
-            return *this; 
+            return *this;
         }
         DigitType carry = 0;
         const std::size_t leftShift = BITS_PER_DIGIT - bitShift;
@@ -266,9 +268,9 @@ const BigInt operator>>(const BigInt& num, std::size_t shift) {
 
 BigInt BigInt::karatsuba_multiply(const BigInt& a, const BigInt& b) const {
     if (a.isZero() || b.isZero()) {
-        return BigInt(); // 0
+        return BigInt();
     }
-    const std::size_t KARATSUBA_THRESHOLD = 32; 
+    const std::size_t KARATSUBA_THRESHOLD = 32;
     if (a.size() < KARATSUBA_THRESHOLD || b.size() < KARATSUBA_THRESHOLD) {
         return schoolbook_multiply(a, b);
     }
@@ -280,25 +282,25 @@ BigInt BigInt::karatsuba_multiply(const BigInt& a, const BigInt& b) const {
     BigInt a_1, a_0, b_1, b_0;
     std::size_t a0_size = std::min(m, a_abs.size());
     a_0._digits.resize(a0_size);
-    for(std::size_t i = 0; i < a0_size; ++i) {
+    for (std::size_t i = 0; i < a0_size; ++i) {
         a_0._digits[i] = a_abs._digits[i];
     }
     if (a_abs.size() > m) {
         std::size_t a1_size = a_abs.size() - m;
         a_1._digits.resize(a1_size);
-        for(std::size_t i = 0; i < a1_size; ++i) {
+        for (std::size_t i = 0; i < a1_size; ++i) {
             a_1._digits[i] = a_abs._digits[m + i];
         }
     }
     std::size_t b0_size = std::min(m, b_abs.size());
     b_0._digits.resize(b0_size);
-    for(std::size_t i = 0; i < b0_size; ++i) {
+    for (std::size_t i = 0; i < b0_size; ++i) {
         b_0._digits[i] = b_abs._digits[i];
     }
     if (b_abs.size() > m) {
         std::size_t b1_size = b_abs.size() - m;
         b_1._digits.resize(b1_size);
-        for(std::size_t i = 0; i < b1_size; ++i) {
+        for (std::size_t i = 0; i < b1_size; ++i) {
             b_1._digits[i] = b_abs._digits[m + i];
         }
     }
