@@ -112,6 +112,20 @@ class DynamicArray {
         }
     }
 
+    void resize(std::size_t new_size, const T& value = T()) {
+        if (new_size < _size) {
+            for (std::size_t i = new_size; i < _size; ++i) {
+                _allocator.destroy(&_data[i]);
+            }
+        } else if (new_size > _size) {
+            reserve(new_size);
+            for (std::size_t i = _size; i < new_size; ++i) {
+                _allocator.construct(&_data[i], value);
+            }
+        }
+        _size = new_size;
+    }
+
  private:
     T* _data;
     std::size_t _size;

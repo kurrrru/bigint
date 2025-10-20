@@ -30,10 +30,23 @@ void swap(BigInt& lhs, BigInt& rhs) {
     lhs.swap(rhs);
 }
 
+void BigInt::normalize() {
+    while (_digits.size() > 1 && _digits[_digits.size() - 1] == 0) {
+        _digits.pop_back();
+    }
+    if (isZero()) {
+        _isNegative = false;
+    }
+}
+
 bool BigInt::isZero() const {
     return _digits.size() == 0 || (_digits.size() == 1 && _digits[0] == 0);
 }
 
 bool BigInt::isNegative() const {
     return _isNegative;
+}
+
+std::size_t BigInt::size() const {
+    return _digits.size();
 }

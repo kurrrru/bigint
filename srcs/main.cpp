@@ -1,24 +1,28 @@
-#include <srcs/DynamicArray.hpp>
+#include <srcs/BigInt.hpp>
 
 #include <iostream>
 
 int main() {
-    DynamicArray<int> arr;
-    for (int i = 0; i < 10; ++i) {
-        arr.push_back(i);
+    {
+        BigInt a("123456789012345678901234567890");
+        std::cout << "a: " << a.toString() << std::endl;
     }
-
-    std::cout << "Array contents: ";
-    for (size_t i = 0; i < arr.size(); ++i) {
-        std::cout << arr[i] << " ";
+    {
+        BigInt b(1);
+        for (int i = 0; i < 10; ++i) {
+            b *= BigInt(10000000);
+            std::cout << "b: " << b.toString() << std::endl;
+        }
+        for (int i = 0; i < 10; ++i) {
+            b /= BigInt(10000000);
+            BigInt c = b % BigInt(10000000);
+            std::cout << "b: " << b.toString() << ", c: " << c.toString() << std::endl;
+        }
     }
-    std::cout << std::endl;
-
-    arr.pop_back();
-    std::cout << "After pop_back, size: " << arr.size() << std::endl;
-
-    arr.clear();
-    std::cout << "After clear, size: " << arr.size() << std::endl;
-
-    return 0;
+    {
+        BigInt c(-5);
+        BigInt d(3);
+        std::cout << c / d << ", " << c % d << std::endl;
+        std::cout << -5 / 3 << ", " << -5 % 3 << std::endl;
+    }
 }

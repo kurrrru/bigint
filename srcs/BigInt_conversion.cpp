@@ -1,9 +1,11 @@
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 
 #include <srcs/BigInt.hpp>
 #include <srcs/DynamicArray.hpp>
+#include <toolbox/string.hpp>
 
 BigInt::BigInt(int value)
     : _digits(), _isNegative(false) {
@@ -22,7 +24,6 @@ BigInt::BigInt(const std::string& str)
     if (str.empty()) {
         throw std::invalid_argument("Invalid string for BigInt: empty string");
     }
-
     std::size_t startIndex = 0;
     if (str[0] == '-') {
         _isNegative = true;
@@ -30,27 +31,38 @@ BigInt::BigInt(const std::string& str)
     } else if (str[0] == '+') {
         startIndex = 1;
     }
-
     if (startIndex == str.size()) {
         throw std::invalid_argument("Invalid string for BigInt: no digits");
     }
-
+    const BigInt TEN(10);
+    for (std::size_t i = startIndex; i < str.size(); ++i) {
+        if (!std::isdigit(static_cast<unsigned char>(str[i]))) {
+            throw std::invalid_argument("Invalid string for BigInt: non-digit character");
+        }
+        int digit = str[i] - '0';
+        *this *= TEN;
+        *this += BigInt(digit);
+    }
 }
 
 std::string BigInt::toString() const {
     if (isZero()) {
         return "0";
     }
-
     std::string str;
-    if (_isNegative) {
-        str += '-';
+    BigInt temp = *this;
+    BigInt TEN(10);
+    while (!temp.isZero()) {
+        BigInt quotient, remainder;
+        divide_and_remainder(temp, TEN, quotient, remainder);
+        char digitChar = '0' + remainder._digits[0];
+        str.push_back(digitChar);
+        temp.swap(quotient);
     }
-
-    for (std::size_t i = 0; i < _digits.size(); ++i) {
-        str += std::to_string(_digits[i]);
+    if (isNegative()) {
+        str.push_back('-');
     }
-
+    std::reverse(str.begin(), str.end());
     return str;
 }
 
