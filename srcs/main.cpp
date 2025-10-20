@@ -38,4 +38,12 @@ int main() {
         // (3^100 by wolframalpha)
         std::cout << "e^2: " << e.toString() << std::endl;
     }
+    {
+        BigInt f("9999999999999999999999999999999999999999999999999999999");
+        BigInt g("33554432");
+        BigInt h = f / g;
+        BigInt i = f % g;
+        std::cout << "f / g: " << h.toString() << std::endl;
+        std::cout << "f % g: " << i.toString() << std::endl;
+    }
 }
