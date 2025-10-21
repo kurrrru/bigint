@@ -20,6 +20,7 @@ class BigInt {
     bool isZero() const;
     bool isNegative() const;
     std::size_t size() const;
+    BigInt abs() const;
 
     // BigInt_calculation.cpp
     BigInt& operator+=(const BigInt& rhs);

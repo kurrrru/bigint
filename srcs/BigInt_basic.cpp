@@ -51,3 +51,9 @@ bool BigInt::isNegative() const {
 std::size_t BigInt::size() const {
     return _digits.size();
 }
+
+BigInt BigInt::abs() const {
+    BigInt result(*this);
+    result._isNegative = false;
+    return result;
+}
