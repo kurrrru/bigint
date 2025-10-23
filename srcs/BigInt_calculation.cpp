@@ -111,14 +111,16 @@ BigInt& BigInt::operator*=(const BigInt& rhs) {
 
 BigInt& BigInt::operator/=(const BigInt& rhs) {  // O(n^2)
     BigInt quotient, remainder;
-    divide_and_remainder(*this, rhs, quotient, remainder);
+    // schoolbook_division(*this, rhs, quotient, remainder);
+    division_and_remainder(*this, rhs, quotient, remainder);
     *this = quotient;
     return *this;
 }
 
 BigInt& BigInt::operator%=(const BigInt& rhs) {  // O(n^2)
     BigInt quotient, remainder;
-    divide_and_remainder(*this, rhs, quotient, remainder);
+    // schoolbook_division(*this, rhs, quotient, remainder);
+    division_and_remainder(*this, rhs, quotient, remainder);
     *this = remainder;
     return *this;
 }
@@ -338,6 +340,45 @@ const BigInt operator>>(const BigInt& num, std::size_t shift) {
     return result;
 }
 
+std::size_t BigInt::clz() const {
+    if (isZero()) {
+        return BITS_PER_DIGIT;
+    }
+    DigitType most_significant_digit = _digits[_digits.size() - 1];
+    std::size_t count = 0;
+    if (BITS_PER_DIGIT == 32) {
+        if (!(most_significant_digit & 0xFFFF0000)) {
+            count += 16;
+            most_significant_digit <<= 16;
+        }
+        if (!(most_significant_digit & 0xFF000000)) {
+            count += 8;
+            most_significant_digit <<= 8;
+        }
+        if (!(most_significant_digit & 0xF0000000)) {
+            count += 4;
+            most_significant_digit <<= 4;
+        }
+        if (!(most_significant_digit & 0xC0000000)) {
+            count += 2;
+            most_significant_digit <<= 2;
+        }
+        if (!(most_significant_digit & 0x80000000)) {
+            count += 1;
+        }
+    } else {
+        for (std::size_t i = 0; i < BITS_PER_DIGIT; ++i) {
+            if ((most_significant_digit & (1U << (BITS_PER_DIGIT - 1))) == 0) {
+                count++;
+                most_significant_digit <<= 1;
+            } else {
+                break;
+            }
+        }
+    }
+    return count;
+}
+
 BigInt BigInt::karatsuba_multiply(const BigInt& a, const BigInt& b) const {
     if (a.isZero() || b.isZero()) {
         return BigInt();
@@ -461,25 +502,25 @@ BigInt BigInt::schoolbook_multiply(const BigInt& a, const BigInt& b) const {
     return result;
 }
 
-void BigInt::divide_and_remainder(const BigInt& dividend,
+void BigInt::schoolbook_division(const BigInt& divided,
                                 const BigInt& divisor,
                                 BigInt& quotient,
                                 BigInt& remainder) const {
     if (divisor.isZero()) {
         throw std::runtime_error("Error: division by zero");
     }
-    if (dividend.isZero()) {
+    if (divided.isZero()) {
         quotient = BigInt();
         remainder = BigInt();
         return;
     }
-    BigInt a_abs = dividend;
+    BigInt a_abs = divided;
     a_abs._isNegative = false;
     BigInt b_abs = divisor;
     b_abs._isNegative = false;
     if (a_abs < b_abs) {
         quotient = BigInt();
-        remainder = dividend;
+        remainder = divided;
         return;
     }
     quotient = BigInt();
@@ -496,10 +537,10 @@ void BigInt::divide_and_remainder(const BigInt& dividend,
             }
         }
     }
-    if (dividend._isNegative != divisor._isNegative) {
+    if (divided._isNegative != divisor._isNegative) {
         quotient._isNegative = true;
     }
-    if (dividend._isNegative) {
+    if (divided._isNegative) {
         remainder._isNegative = true;
     }
     quotient.normalize();
