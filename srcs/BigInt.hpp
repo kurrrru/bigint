@@ -6,7 +6,6 @@
 
 #include <srcs/DynamicArray.hpp>
 
-
 class BigInt {
  public:
     typedef unsigned int DigitType;
