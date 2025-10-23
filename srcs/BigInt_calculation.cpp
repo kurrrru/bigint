@@ -119,7 +119,6 @@ BigInt& BigInt::operator*=(const BigInt& rhs) {
 
 BigInt& BigInt::operator/=(const BigInt& rhs) {  // O(n^2)
     BigInt quotient, remainder;
-    // schoolbook_division(*this, rhs, quotient, remainder);
     division_and_remainder(*this, rhs, quotient, remainder);
     *this = quotient;
     return *this;
@@ -127,7 +126,6 @@ BigInt& BigInt::operator/=(const BigInt& rhs) {  // O(n^2)
 
 BigInt& BigInt::operator%=(const BigInt& rhs) {  // O(n^2)
     BigInt quotient, remainder;
-    // schoolbook_division(*this, rhs, quotient, remainder);
     division_and_remainder(*this, rhs, quotient, remainder);
     *this = remainder;
     return *this;
