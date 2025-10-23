@@ -2,7 +2,7 @@ NAME = bigint_test
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -pedantic
 SRCS = srcs/main.cpp srcs/BigInt_basic.cpp srcs/BigInt_calculation.cpp srcs/BigInt_conversion.cpp \
-	   srcs/BigInt_comparison.cpp toolbox/string.cpp srcs/BZ.cpp
+	   srcs/BigInt_comparison.cpp toolbox/string.cpp
 OBJS = $(SRCS:.cpp=.o)
 INCLUDES = -I .
 
