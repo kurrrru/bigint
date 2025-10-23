@@ -391,7 +391,7 @@ BigInt BigInt::karatsuba_multiply(const BigInt& a, const BigInt& b) const {
     if (a.isZero() || b.isZero()) {
         return BigInt();
     }
-    if (a.size() < KARATSUBA_THRESHOLD || b.size() < KARATSUBA_THRESHOLD) {
+    if (a.size() < MULTIPLY_THRESHOLD || b.size() < MULTIPLY_THRESHOLD) {
         return schoolbook_multiply(a, b);
     }
     const bool result_is_negative = a._isNegative != b._isNegative;
@@ -567,7 +567,7 @@ void BigInt::division_and_remainder(const BigInt& divided,
         remainder = divided;
         return;
     }
-    if (divisor.size() < BZ_THRESHOLD ||
+    if (divisor.size() < DIVISION_THRESHOLD ||
         (divided.size() - divisor.size() < BZ_OFFSET_THRESHOLD)) {
         schoolbook_division(divided, divisor, quotient, remainder);
         return;
@@ -577,7 +577,8 @@ void BigInt::division_and_remainder(const BigInt& divided,
     BigInt normalized_divided = divided.abs() << shift;
     BigInt normalized_divisor = divisor.abs() << shift;
 
-    recursive_division(normalized_divided, normalized_divisor, quotient, remainder);
+    recursive_division(normalized_divided, normalized_divisor,
+        quotient, remainder);
 
     remainder >>= shift;
     if (divided.isNegative() != divisor.isNegative()) {
@@ -617,13 +618,14 @@ void BigInt::divide_2n_by_n(const BigInt& divided,
                             BigInt& quotient,
                             BigInt& remainder) const {
     std::size_t n = divisor.size();
-    if (n < BZ_THRESHOLD) {
+    if (n < DIVISION_THRESHOLD) {
         schoolbook_division(divided, divisor, quotient, remainder);
         return;
     }
     std::size_t n_half = n / 2;
     BigInt A1A2 = divided >> (n * BITS_PER_DIGIT);
-    BigInt A3 = (divided >> (n_half * BITS_PER_DIGIT)) & mask(n_half * BITS_PER_DIGIT);
+    BigInt A3 = (divided >> (n_half * BITS_PER_DIGIT))
+        & mask(n_half * BITS_PER_DIGIT);
     BigInt A4 = divided & mask(n_half * BITS_PER_DIGIT);
 
     BigInt Q1, R1;
@@ -654,7 +656,8 @@ void BigInt::divide_3n_by_2n(const BigInt& divided_high,
         divide_2n_by_n(divided_high, B1, quotient, R_high);
     } else {
         quotient = mask(n - n_half);
-        R_high = divided_high + divided_low - (B1 << (n * BITS_PER_DIGIT)) + (B1 << (n_half * BITS_PER_DIGIT));
+        R_high = divided_high + divided_low - (B1 << (n * BITS_PER_DIGIT))
+            + (B1 << (n_half * BITS_PER_DIGIT));
     }
 
     remainder = R_high - (quotient * B2);

@@ -82,6 +82,5 @@ int main() {
             result /= base;
         }
         std::cout << "result / (base ^ exponent): " << result << std::endl;
-
     }
 }
