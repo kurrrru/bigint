@@ -123,6 +123,49 @@ BigInt& BigInt::operator%=(const BigInt& rhs) {  // O(n^2)
     return *this;
 }
 
+BigInt& BigInt::operator&=(const BigInt& rhs) {
+    BigInt result;
+    std::size_t minSize = std::min(this->size(), rhs.size());
+    result._digits.resize(minSize);
+    for (std::size_t i = 0; i < minSize; ++i) {
+        result._digits[i] = this->_digits[i] & rhs._digits[i];
+    }
+    result._isNegative = this->_isNegative && rhs._isNegative;
+    result.normalize();
+    *this = result;
+    return *this;
+}
+
+BigInt& BigInt::operator|=(const BigInt& rhs) {
+    BigInt result;
+    std::size_t maxSize = std::max(this->size(), rhs.size());
+    result._digits.resize(maxSize);
+    for (std::size_t i = 0; i < maxSize; ++i) {
+        DigitType lhsDigit = (i < this->_digits.size()) ? this->_digits[i] : 0;
+        DigitType rhsDigit = (i < rhs._digits.size()) ? rhs._digits[i] : 0;
+        result._digits[i] = lhsDigit | rhsDigit;
+    }
+    result._isNegative = this->_isNegative || rhs._isNegative;
+    result.normalize();
+    *this = result;
+    return *this;
+}
+
+BigInt& BigInt::operator^=(const BigInt& rhs) {
+    BigInt result;
+    std::size_t maxSize = std::max(this->size(), rhs.size());
+    result._digits.resize(maxSize);
+    for (std::size_t i = 0; i < maxSize; ++i) {
+        DigitType lhsDigit = (i < this->_digits.size()) ? this->_digits[i] : 0;
+        DigitType rhsDigit = (i < rhs._digits.size()) ? rhs._digits[i] : 0;
+        result._digits[i] = lhsDigit ^ rhsDigit;
+    }
+    result._isNegative = this->_isNegative ^ rhs._isNegative;
+    result.normalize();
+    *this = result;
+    return *this;
+}
+
 BigInt& BigInt::operator<<=(std::size_t shift) {
     if (shift == 0 || isZero()) {
         return *this;
@@ -202,6 +245,17 @@ BigInt BigInt::operator-() const {
     return result;
 }
 
+BigInt BigInt::operator~() const {
+    BigInt result;
+    result._digits.resize(this->size());
+    for (std::size_t i = 0; i < this->size(); ++i) {
+        result._digits[i] = ~(this->_digits[i]);
+    }
+    result._isNegative = !this->_isNegative;
+    result.normalize();
+    return result;
+}
+
 BigInt& BigInt::operator++() {
     *this += BigInt(1);
     return *this;
@@ -251,6 +305,24 @@ const BigInt operator/(const BigInt& lhs, const BigInt& rhs) {
 const BigInt operator%(const BigInt& lhs, const BigInt& rhs) {
     BigInt result(lhs);
     result %= rhs;
+    return result;
+}
+
+const BigInt operator&(const BigInt& lhs, const BigInt& rhs) {
+    BigInt result(lhs);
+    result &= rhs;
+    return result;
+}
+
+const BigInt operator|(const BigInt& lhs, const BigInt& rhs) {
+    BigInt result(lhs);
+    result |= rhs;
+    return result;
+}
+
+const BigInt operator^(const BigInt& lhs, const BigInt& rhs) {
+    BigInt result(lhs);
+    result ^= rhs;
     return result;
 }
 

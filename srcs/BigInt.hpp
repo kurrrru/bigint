@@ -26,9 +26,13 @@ class BigInt {
     BigInt& operator+=(const BigInt& rhs);
     BigInt& operator-=(const BigInt& rhs);
     BigInt& operator*=(const BigInt& rhs);
-    BigInt& operator/=(const BigInt& rhs);  // not implemented yet
+    BigInt& operator/=(const BigInt& rhs);
     BigInt& operator%=(const BigInt& rhs);
+    BigInt& operator&=(const BigInt& rhs);
+    BigInt& operator|=(const BigInt& rhs);
+    BigInt& operator^=(const BigInt& rhs);
     BigInt operator-() const;
+    BigInt operator~() const;
     BigInt& operator++();
     BigInt operator++(int);
     BigInt& operator--();
@@ -47,7 +51,7 @@ class BigInt {
     // BigInt_conversion.cpp
     explicit BigInt(int value);
     explicit BigInt(const std::string& str);
-    std::string toString() const;  // not implemented yet
+    std::string toString() const;
 
  private:
     DynamicArray<DigitType> _digits;
@@ -71,6 +75,9 @@ const BigInt operator-(const BigInt& lhs, const BigInt& rhs);
 const BigInt operator*(const BigInt& lhs, const BigInt& rhs);
 const BigInt operator/(const BigInt& lhs, const BigInt& rhs);
 const BigInt operator%(const BigInt& lhs, const BigInt& rhs);
+const BigInt operator&(const BigInt& lhs, const BigInt& rhs);
+const BigInt operator|(const BigInt& lhs, const BigInt& rhs);
+const BigInt operator^(const BigInt& lhs, const BigInt& rhs);
 const BigInt operator<<(const BigInt& num, std::size_t shift);
 const BigInt operator>>(const BigInt& num, std::size_t shift);
 
