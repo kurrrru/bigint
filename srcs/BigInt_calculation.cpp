@@ -391,7 +391,6 @@ BigInt BigInt::karatsuba_multiply(const BigInt& a, const BigInt& b) const {
     if (a.isZero() || b.isZero()) {
         return BigInt();
     }
-    const std::size_t KARATSUBA_THRESHOLD = 32;
     if (a.size() < KARATSUBA_THRESHOLD || b.size() < KARATSUBA_THRESHOLD) {
         return schoolbook_multiply(a, b);
     }

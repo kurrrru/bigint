@@ -7,11 +7,11 @@ BigInt pow(const BigInt base, const BigInt exponent) {
     BigInt b = base;
     BigInt e = exponent;
     while (e > BigInt(0)) {
-        if ((e % BigInt(2)) == BigInt(1)) {
+        if ((e & BigInt(1)) == BigInt(1)) {
             result *= b;
         }
         b *= b;
-        e /= BigInt(2);
+        e >>= 1;
     }
     return result;
 }
@@ -74,11 +74,11 @@ int main() {
         std::cout << "l / j: " << l.toString() << std::endl;
     }
     {
-        BigInt base("123456789012345678901234567890");
-        BigInt exponent("25");
+        BigInt base("123456789");
+        BigInt exponent("100");
         BigInt result = pow(base, exponent);
         std::cout << "base ^ exponent: " << result << std::endl;
-        for (int i = 0; i < 25; ++i) {
+        for (int i = 0; i < 100; ++i) {
             result /= base;
         }
         std::cout << "result / (base ^ exponent): " << result << std::endl;

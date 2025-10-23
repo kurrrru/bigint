@@ -59,7 +59,8 @@ class BigInt {
     DynamicArray<DigitType> _digits;
     bool _isNegative;
     static const std::size_t BITS_PER_DIGIT = sizeof(DigitType) * 8;
-    static const std::size_t BZ_THRESHOLD = 16;
+    static const std::size_t KARATSUBA_THRESHOLD = 10;
+    static const std::size_t BZ_THRESHOLD = 70;
 
     BigInt karatsuba_multiply(const BigInt& a, const BigInt& b) const;
     BigInt schoolbook_multiply(const BigInt& a, const BigInt& b) const;
