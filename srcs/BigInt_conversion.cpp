@@ -24,9 +24,10 @@ BigInt::BigInt(const std::string& str)
     if (str.empty()) {
         throw std::invalid_argument("Invalid string for BigInt: empty string");
     }
+    bool negativeflag = false;
     std::size_t startIndex = 0;
     if (str[0] == '-') {
-        _isNegative = true;
+        negativeflag = true;
         startIndex = 1;
     } else if (str[0] == '+') {
         startIndex = 1;
@@ -44,6 +45,7 @@ BigInt::BigInt(const std::string& str)
         *this *= TEN;
         *this += BigInt(digit);
     }
+    _isNegative = negativeflag && !isZero();
 }
 
 std::string BigInt::toString() const {
