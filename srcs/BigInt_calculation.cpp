@@ -647,28 +647,74 @@ void BigInt::divide_3n_by_2n(const BigInt& divided_high,
     BigInt B2 = divisor & mask(n_half * BITS_PER_DIGIT);
 
     BigInt A1 = divided_high >> (n_half * BITS_PER_DIGIT);
-    BigInt A2 = divided_high & mask(n_half * BITS_PER_DIGIT);
-
-    BigInt R_high;
+    BigInt R1;
     if (A1 < B1) {
-        divide_2n_by_n(divided_high, B1, quotient, R_high);
+        divide_2n_by_n(divided_high, B1, quotient, R1);
     } else {
-        quotient = mask(n - n_half);
-        R_high = divided_high + divided_low - (B1 << (n * BITS_PER_DIGIT))
-            + (B1 << (n_half * BITS_PER_DIGIT));
+        quotient = mask(n_half * BITS_PER_DIGIT);
+        R1 = divided_high - (B1 << (n_half * BITS_PER_DIGIT)) + B1;
     }
-
-    remainder = R_high - (quotient * B2);
+    remainder = (R1 << (n_half * BITS_PER_DIGIT)) + divided_low - (quotient * B2);
     while (remainder.isNegative()) {
         remainder += divisor;
         quotient -= BigInt(1);
     }
 }
 
+// void BigInt::divide_3n_by_2n(const BigInt& divided_high,
+//                             const BigInt& divided_low,
+//                             const BigInt& divisor,
+//                             BigInt& quotient,
+//                             BigInt& remainder) const {
+//     std::size_t n = divisor.size();
+//     std::size_t n_half = n / 2;
+
+//     BigInt B1 = divisor >> (n_half * BITS_PER_DIGIT);
+//     BigInt B2 = divisor & mask(n_half * BITS_PER_DIGIT);
+
+//     BigInt A1 = divided_high >> (n_half * BITS_PER_DIGIT);
+//     BigInt A2 = divided_high & mask(n_half * BITS_PER_DIGIT);
+
+//     BigInt R_high;
+//     if (A1 < B1) {
+//         divide_2n_by_n(divided_high, B1, quotient, R_high);
+//     } else {
+//         quotient = mask(n - n_half);
+//         R_high = divided_high + divided_low - (B1 << (n * BITS_PER_DIGIT))
+//             + (B1 << (n_half * BITS_PER_DIGIT));
+//     }
+
+//     remainder = R_high - (quotient * B2);
+//     while (remainder.isNegative()) {
+//         remainder += divisor;
+//         quotient -= BigInt(1);
+//     }
+// }
+
 BigInt BigInt::pad_leading_zeros(std::size_t new_size) const {
     BigInt result(*this);
     if (new_size > result.size()) {
         result._digits.resize(new_size);
+    }
+    return result;
+}
+
+BigInt BigInt::pow(const BigInt& base, std::size_t exp) {
+    if (exp == 0) {
+        return BigInt(1);
+    }
+    if (exp == 1) {
+        return base;
+    }
+    BigInt result(1);
+    BigInt current_base = base;
+    std::size_t current_exp = exp;
+    while (current_exp > 0) {
+        if (current_exp & 1) {
+            result *= current_base;
+        }
+        current_base *= current_base;
+        current_exp >>= 1;
     }
     return result;
 }

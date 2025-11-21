@@ -1,3 +1,4 @@
 *.o
 bigint_test
 .vscode/
+tmp/

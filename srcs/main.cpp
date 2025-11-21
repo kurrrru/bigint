@@ -74,11 +74,13 @@ int main() {
         std::cout << "l / j: " << l.toString() << std::endl;
     }
     {
-        BigInt base("123456789");
-        BigInt exponent("100");
-        BigInt result = pow(base, exponent);
+        BigInt base("12345678999999999999999999");
+        // BigInt exponent("500");
+        std::cout << "base: " << base << std::endl;
+        BigInt result = BigInt::pow(base, 500);
+        std::cout << "done computing base ^ exponent" << std::endl;
         std::cout << "base ^ exponent: " << result << std::endl;
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 500; ++i) {
             result /= base;
         }
         std::cout << "result / (base ^ exponent): " << result << std::endl;

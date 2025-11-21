@@ -7,6 +7,26 @@
 #include <srcs/DynamicArray.hpp>
 #include <toolbox/string.hpp>
 
+namespace {
+
+BigInt stringToBigIntRecursive(const std::string& str, std::size_t start, std::size_t end) {
+    std::size_t len = end - start;
+    if (len <= 9) {
+        int val = 0;
+        for (std::size_t i = start; i < end; ++i) {
+            val = val * 10 + (str[i] - '0');
+        }
+        return BigInt(val);
+    }
+    std::size_t mid = start + len / 2;
+    std::size_t lenLow = end - mid;
+    BigInt high = stringToBigIntRecursive(str, start, mid);
+    BigInt low = stringToBigIntRecursive(str, mid, end);
+    return high * BigInt::pow(BigInt(10), lenLow) + low;
+}
+
+} // namespace
+
 BigInt::BigInt(int value)
     : _digits(), _isNegative(false) {
     DigitType absValue;
@@ -24,10 +44,9 @@ BigInt::BigInt(const std::string& str)
     if (str.empty()) {
         throw std::invalid_argument("Invalid string for BigInt: empty string");
     }
-    bool negativeflag = false;
     std::size_t startIndex = 0;
     if (str[0] == '-') {
-        negativeflag = true;
+        _isNegative = true;
         startIndex = 1;
     } else if (str[0] == '+') {
         startIndex = 1;
@@ -35,37 +54,58 @@ BigInt::BigInt(const std::string& str)
     if (startIndex == str.size()) {
         throw std::invalid_argument("Invalid string for BigInt: no digits");
     }
-    const BigInt TEN(10);
     for (std::size_t i = startIndex; i < str.size(); ++i) {
         if (!std::isdigit(static_cast<unsigned char>(str[i]))) {
-            throw std::invalid_argument(
-                "Invalid string for BigInt: non-digit character");
+            throw std::invalid_argument("Invalid string for BigInt: non-digit character");
         }
-        int digit = str[i] - '0';
-        *this *= TEN;
-        *this += BigInt(digit);
     }
-    _isNegative = negativeflag && !isZero();
+    BigInt result = stringToBigIntRecursive(str, startIndex, str.size());
+    _digits.swap(result._digits);
+    if (isZero()) {
+        _isNegative = false;
+    }
+}
+
+std::string BigInt::toStringRecursive(const BigInt& n) const {
+    if (n.size() <= 1) {
+        if (n.isZero()) {
+            return "0";
+        }
+        std::ostringstream oss;
+        oss << n._digits[0];
+        return oss.str();
+    }
+    std::size_t half_digits = n.size() * 4;
+    BigInt powerOf10 = BigInt::pow(BigInt(10), half_digits);
+
+    BigInt quotient, remainder;
+    division_and_remainder(n, powerOf10, quotient, remainder);
+
+    std::string high = toStringRecursive(quotient);
+    std::string low = toStringRecursive(remainder);
+    if (high == "0") {
+        return low;
+    }
+    std::string padding;
+    if (low.length() < half_digits) {
+        padding.assign(half_digits - low.length(), '0');
+    }
+    return high + padding + low;
 }
 
 std::string BigInt::toString() const {
     if (isZero()) {
         return "0";
     }
-    std::string str;
-    BigInt temp = *this;
-    BigInt TEN(10);
-    while (!temp.isZero()) {
-        BigInt quotient, remainder;
-        division_and_remainder(temp, TEN, quotient, remainder);
-        char digitChar = '0' + remainder._digits[0];
-        str.push_back(digitChar);
-        temp.swap(quotient);
+    bool negative = isNegative();
+    BigInt absVal = *this;
+    if (negative) {
+        absVal = -absVal; 
     }
-    if (isNegative()) {
-        str.push_back('-');
+    std::string str = toStringRecursive(absVal);
+    if (negative) {
+        return "-" + str;
     }
-    std::reverse(str.begin(), str.end());
     return str;
 }
 

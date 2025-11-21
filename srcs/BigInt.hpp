@@ -54,6 +54,8 @@ class BigInt {
 
     std::size_t clz() const;
 
+    static BigInt pow(const BigInt& base, std::size_t exp);
+
  private:
     DynamicArray<DigitType> _digits;
     bool _isNegative;
@@ -85,6 +87,7 @@ class BigInt {
                         BigInt& quotient,
                         BigInt& remainder) const;
     BigInt pad_leading_zeros(std::size_t new_size) const;
+    std::string toStringRecursive(const BigInt& n) const;
 };
 
 // BigInt_basic.cpp
