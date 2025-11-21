@@ -2,20 +2,6 @@
 
 #include <srcs/BigInt.hpp>
 
-BigInt pow(const BigInt base, const BigInt exponent) {
-    BigInt result(1);
-    BigInt b = base;
-    BigInt e = exponent;
-    while (e > BigInt(0)) {
-        if ((e & BigInt(1)) == BigInt(1)) {
-            result *= b;
-        }
-        b *= b;
-        e >>= 1;
-    }
-    return result;
-}
-
 int main() {
     {
         BigInt a("123456789012345678901234567890");
@@ -77,10 +63,10 @@ int main() {
         BigInt base("12345678999999999999999999");
         // BigInt exponent("500");
         std::cout << "base: " << base << std::endl;
-        BigInt result = BigInt::pow(base, 500);
+        BigInt result = BigInt::pow(base, 5000);
         std::cout << "done computing base ^ exponent" << std::endl;
         std::cout << "base ^ exponent: " << result << std::endl;
-        for (int i = 0; i < 500; ++i) {
+        for (int i = 0; i < 5000; ++i) {
             result /= base;
         }
         std::cout << "result / (base ^ exponent): " << result << std::endl;

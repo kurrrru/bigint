@@ -2,9 +2,8 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 #include <utility>
-
-#include <srcs/DynamicArray.hpp>
 
 class BigInt {
  public:
@@ -27,17 +26,12 @@ class BigInt {
     BigInt& operator*=(const BigInt& rhs);
     BigInt& operator/=(const BigInt& rhs);
     BigInt& operator%=(const BigInt& rhs);
-    BigInt& operator&=(const BigInt& rhs);
-    BigInt& operator|=(const BigInt& rhs);
-    BigInt& operator^=(const BigInt& rhs);
     BigInt operator-() const;
-    BigInt operator~() const;
     BigInt& operator++();
     BigInt operator++(int);
     BigInt& operator--();
     BigInt operator--(int);
-    BigInt& operator<<=(std::size_t shift);
-    BigInt& operator>>=(std::size_t shift);
+    static BigInt pow(const BigInt& base, std::size_t exp);
 
     // BigInt_comparison.cpp
     bool operator==(const BigInt& rhs) const;
@@ -52,14 +46,10 @@ class BigInt {
     explicit BigInt(const std::string& str);
     std::string toString() const;
 
-    std::size_t clz() const;
-
-    static BigInt pow(const BigInt& base, std::size_t exp);
-
  private:
-    DynamicArray<DigitType> _digits;
+    std::vector<DigitType> _digits;
     bool _isNegative;
-    static const std::size_t BITS_PER_DIGIT = sizeof(DigitType) * 8;
+    static const unsigned int BASE = 1000000000;
     static const std::size_t MULTIPLY_THRESHOLD = 10;
     static const std::size_t DIVISION_THRESHOLD = 70;
 
@@ -82,12 +72,16 @@ class BigInt {
                         BigInt& quotient,
                         BigInt& remainder) const;
     void divide_3n_by_2n(const BigInt& divided_high,
-                        const BigInt& divided_low,
                         const BigInt& divisor,
                         BigInt& quotient,
                         BigInt& remainder) const;
-    BigInt pad_leading_zeros(std::size_t new_size) const;
-    std::string toStringRecursive(const BigInt& n) const;
+
+    // help functions
+    BigInt shift_block_left(std::size_t n) const;
+    BigInt extract_range(std::size_t start, std::size_t end) const;
+    BigInt scalar_mul(int s) const;
+    static void add_abs(BigInt& a, const BigInt& b);
+    static void sub_abs(BigInt& a, const BigInt& b);
 };
 
 // BigInt_basic.cpp
@@ -99,11 +93,6 @@ const BigInt operator-(const BigInt& lhs, const BigInt& rhs);
 const BigInt operator*(const BigInt& lhs, const BigInt& rhs);
 const BigInt operator/(const BigInt& lhs, const BigInt& rhs);
 const BigInt operator%(const BigInt& lhs, const BigInt& rhs);
-const BigInt operator&(const BigInt& lhs, const BigInt& rhs);
-const BigInt operator|(const BigInt& lhs, const BigInt& rhs);
-const BigInt operator^(const BigInt& lhs, const BigInt& rhs);
-const BigInt operator<<(const BigInt& num, std::size_t shift);
-const BigInt operator>>(const BigInt& num, std::size_t shift);
 
 // BigInt_conversion.cpp
 std::ostream& operator<<(std::ostream& os, const BigInt& num);

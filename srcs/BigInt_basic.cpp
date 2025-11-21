@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <vector>
 #include <utility>
 
 #include <srcs/BigInt.hpp>
-#include <srcs/DynamicArray.hpp>
 
 BigInt::BigInt()
     : _digits(), _isNegative(false) {}

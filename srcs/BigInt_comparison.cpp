@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <vector>
 
 #include <srcs/BigInt.hpp>
-#include <srcs/DynamicArray.hpp>
 
 bool BigInt::operator==(const BigInt& rhs) const {
     if (isNegative() != rhs.isNegative()) {
