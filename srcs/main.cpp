@@ -71,4 +71,15 @@ int main() {
         }
         std::cout << "result / (base ^ exponent): " << result << std::endl;
     }
+    {
+        BigInt m = BigInt::pow(BigInt(2), 1000);
+        std::cout << "2 ^ 1000: " << m << std::endl;
+        BigInt n = BigInt::pow(BigInt(5), 1000);
+        std::cout << "5 ^ 1000: " << n << std::endl;
+        BigInt p = m * n;
+        std::cout << "2^1000 * 5^1000: " << p << std::endl;
+        BigInt q = BigInt::pow(BigInt(10), 1000);
+        std::cout << "10 ^ 1000: " << q << std::endl;
+        std::cout << "Are they equal? " << (p == q ? "Yes" : "No") << std::endl;
+    }
 }
